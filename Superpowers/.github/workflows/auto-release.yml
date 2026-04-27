@@ -1,0 +1,92 @@
+name: Auto Release
+
+'on':
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-release-main
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create versioned GitHub release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          git fetch --tags --force
+
+          head_tag="$(git tag --points-at "$GITHUB_SHA" --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1 || true)"
+          if [ -n "$head_tag" ]; then
+            echo "Current commit already has release tag $head_tag. Skipping automatic release."
+            exit 0
+          fi
+
+          latest_tag="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -n 1 || true)"
+          if [ -z "$latest_tag" ]; then
+            next_tag="v0.1.0"
+            range="$GITHUB_SHA"
+          else
+            version="${latest_tag#v}"
+            IFS='.' read -r major minor patch <<< "$version"
+            next_tag="v${major}.${minor}.$((patch + 1))"
+            range="${latest_tag}..${GITHUB_SHA}"
+          fi
+
+          notes_file="$(mktemp)"
+
+          {
+            echo "# ${next_tag}"
+            echo
+            echo "本版本由 GitHub Actions 自动生成。"
+            echo
+
+            if [ -n "$latest_tag" ]; then
+              echo "## 对比范围"
+              echo
+              echo "- 上一个版本：${latest_tag}"
+              echo "- 当前提交：${GITHUB_SHA}"
+              echo
+            fi
+
+            echo "## 变更明细"
+            echo
+
+            if git log --reverse --format='%h%x09%s' "$range" | grep -q .; then
+              while IFS=$'\t' read -r short_sha subject; do
+                [ -n "$short_sha" ] || continue
+                echo "- \`${short_sha}\` ${subject}"
+
+                body="$(git log -1 --format=%b "$short_sha" | sed '/^[[:space:]]*$/d' || true)"
+                if [ -n "$body" ]; then
+                  while IFS= read -r line; do
+                    echo "  ${line}"
+                  done <<< "$body"
+                fi
+              done < <(git log --reverse --format='%h%x09%s' "$range")
+            else
+              echo "- 本次 push 没有可列出的 commit。"
+            fi
+          } > "$notes_file"
+
+          echo "Creating release ${next_tag}"
+          gh release create "$next_tag" \
+            --target "$GITHUB_SHA" \
+            --title "$next_tag" \
+            --notes-file "$notes_file"
