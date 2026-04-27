@@ -109,8 +109,9 @@ Task tool (general-purpose):
     When done, report:
     - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
     - What you implemented (or what you attempted, if blocked)
-    - What you tested and test results
+    - What you tested and exact test results
     - Files changed
+    - Public interfaces, data formats, or files the next task may depend on
     - Self-review findings (if any)
     - Any issues or concerns
 
