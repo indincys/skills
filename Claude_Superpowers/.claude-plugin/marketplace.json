@@ -1,0 +1,18 @@
+{
+  "name": "superpowers-dev",
+  "description": "Development marketplace for indincys' personal Superpowers fork",
+  "owner": {
+    "name": "indincys"
+  },
+  "plugins": [
+    {
+      "name": "superpowers",
+      "description": "Personal Claude Code fork of Superpowers with engineering-risk review and workflow tweaks",
+      "version": "5.0.7-indincys.1",
+      "source": "./",
+      "author": {
+        "name": "indincys"
+      }
+    }
+  ]
+}

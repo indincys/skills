@@ -1,0 +1,19 @@
+{
+  "name": "superpowers",
+  "description": "Personal Claude Code fork of Superpowers with engineering-risk review and workflow tweaks",
+  "version": "5.0.7-indincys.1",
+  "author": {
+    "name": "indincys"
+  },
+  "homepage": "https://github.com/indincys/codex-skills",
+  "repository": "https://github.com/indincys/codex-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "tdd",
+    "debugging",
+    "collaboration",
+    "best-practices",
+    "workflows"
+  ]
+}
