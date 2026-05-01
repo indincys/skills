@@ -1,4 +1,4 @@
 interface:
-  display_name: "xhs-research.skill"
+  display_name: "xhs-research"
   short_description: "系统检索小红书官方课程规则运营资料并按问题输出溯源答案"
   default_prompt: "Use $xhs-research to answer my 小红书运营问题 from official sources with citations."
