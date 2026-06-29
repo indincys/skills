@@ -1,0 +1,5 @@
+interface:
+  display_name: "NFC Social Photo"
+  short_description: "NFC card charm social atmosphere prompt workflow"
+  brand_color: "#6F8F72"
+  default_prompt: "Use $nfc-social-photo to create realistic social-media atmosphere prompts for my NFC card-sleeve charm product references."
