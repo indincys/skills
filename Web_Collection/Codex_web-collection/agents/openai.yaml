@@ -1,4 +1,0 @@
-interface:
-  display_name: "Web Collection"
-  short_description: "Practical web collection and compilation"
-  default_prompt: "Use $web-collection to plan a structured internet collection task before gathering sources."
